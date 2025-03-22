@@ -20,7 +20,7 @@ The project navigates to the Demoblaze site and attempts to sign up a user. If t
 
 ## 🎭 How to Run Playwright Test and Report
 1. Open Terminal and cd to folder 'demoblaze-testing-project'
-2. Run the command `npx playwright test` or `npx playwright test --grep @purchaseItems` to run all tests
+2. Run the command `npx playwright test --workers=1` or `npx playwright test --grep @purchaseItems --workers=1` to run all tests
 3. Run `npx playwright test --grep @uiTest` to run only UI test
 4. Run `npx playwright test --grep @apiTest` to run only API test
 5. If test will finish with errors > Playwright HTML report will open with screenshot, video, traces and console log
