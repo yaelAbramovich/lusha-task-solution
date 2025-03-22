@@ -22,13 +22,12 @@ export class DemoblazeApi extends BaseApi {
       username: this.userName,
       password: userPassword,
     };
+
     const loginToken = await axios
       .post(loginUrl, loginBody, {
         headers: this.apiHeaders,
       })
-      .then((response) => {
-        return response.data.split(":")[1].trim();
-      })
+      .then((response) => response.data.split(":")[1].trim())
       .catch((error) => {
         throw new Error(`catched an error in login post api call: ${error}`);
       });
@@ -40,9 +39,7 @@ export class DemoblazeApi extends BaseApi {
     const entriesUrl = `${this.apiBaseUrl}/entries`;
     const entriesItems = await axios
       .get(entriesUrl)
-      .then(async (response) => {
-        return response.data.Items;
-      })
+      .then(async (response) => response.data.Items)
       .catch((error) => {
         throw new Error(`catched an error get all entries. error: ${error}, entriesUrl: ${entriesUrl}`);
       });
@@ -50,17 +47,17 @@ export class DemoblazeApi extends BaseApi {
   }
 
   async getItemIdfromName(itemName: string) {
+    let itemId = 0;
     const allItems = await this.getAllEntries();
-    for (const item of allItems) {
-      if (item["title"] === itemName) {
-        return item["id"];
-      }
-    }
-    throw new Error(`couldn't find item in site, can't continue with test`);
+
+    for (const item of allItems) if (item["title"] === itemName) itemId = item["id"];
+    if (itemId === 0) throw new Error(`couldn't find item in site, can't continue with test`);
+
+    return itemId;
   }
 
   async addItemToCart(itemName: string) {
-    const itemId = this.getItemIdfromName(itemName);
+    const itemId = await this.getItemIdfromName(itemName);
 
     if (itemId === undefined) throw new Error(`didn't find item in site, can't add it to cart`);
     if (this.actualToken === "") throw new Error(`no token, must run login() before running add item to cart api post`);
@@ -69,38 +66,35 @@ export class DemoblazeApi extends BaseApi {
     const addToCartUrl = `${this.apiBaseUrl}/addtocart`;
     await axios
       .post(addToCartUrl, addToCartBody, { headers: this.apiHeaders })
-      .then((response) => console.log(`added to cart successfully`))
-      .catch((error) => {throw new Error(`error in adding item to cart with api, error: ${error}, url: ${addToCartUrl}, body: ${JSON.stringify(addToCartBody)}`);});
+      .then(() => console.log(`item added to cart with api call`))
+      .catch((error) => {
+        throw new Error(`error in adding item to cart with api, error: ${error}, url: ${addToCartUrl}, body: ${JSON.stringify(addToCartBody)}`);
+      });
   }
 
   async getAllItemsInCart() {
-    console.log(`viewCart this.actualToken: ${this.actualToken}`);
     const viewCarttUrl = `${this.apiBaseUrl}/viewcart`;
     const viewCartBody = { cookie: this.actualToken, flag: true };
     const itemsInCarts = await axios
       .post(viewCarttUrl, viewCartBody, {
         headers: this.apiHeaders,
       })
-      .then((response) => {
-        return response.data.Items;
-      })
-      .catch((error) => {throw new Error(`can't get items from cart. error: ${error}, viewCarttUrl: ${viewCarttUrl}, viewCartBody: ${JSON.stringify(viewCartBody)}`)});
+      .then((response) => response.data.Items)
+      .catch((error) => {
+        throw new Error(`can't get items from cart. error: ${error}, viewCarttUrl: ${viewCarttUrl}, viewCartBody: ${JSON.stringify(viewCartBody)}`);
+      });
 
-    // console.log(`itemsInCarts: ${JSON.stringify(itemsInCarts)}`);
     return itemsInCarts;
   }
 
   async getItemInCart(itemId: number) {
     const viewUrl = `${this.apiBaseUrl}/view`;
     const viewBody = { id: itemId };
-    // console.log(`viewUrl: ${viewUrl}`);
     const cartitemDetails = await axios
       .post(viewUrl, viewBody, {
         headers: this.apiHeaders,
       })
-      .then((response) => {
-        return response.data;
-      })
+      .then((response) => response.data)
       .catch((error) => {
         throw new Error(`can't get item from cart. error: ${error} itemId: ${itemId}, api url: ${viewUrl}`);
       });
