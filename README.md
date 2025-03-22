@@ -29,10 +29,9 @@ The project navigates to the Demoblaze site and attempts to sign up a user. If t
 ## 🐛 Issues & Contributions
 
 1. I had to wait 1 second after adding an item to the cart due to the site's slowness. I typically avoid using implicit wait. If I had more time, I would have found the proper solution for this issue.
-2. For testing new user sign up: run without .env file or change .env file values.
-3. For testing signed up user: You can use username: yael11, password: 12345
+2. For testing new user sign up: change username and password.
+3. For testing signed up user: You can use username: dummy1001, password: 12345
 
 ## 👤 Author
 
 Name: Yael Abramovich Kenig
-Github: TBD
