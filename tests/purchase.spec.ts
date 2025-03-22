@@ -80,7 +80,7 @@ test.describe("Purchase items from store", { tag: ["@purchaseItems"] }, () => {
   });
 
   [{ itemName: "Nexus 6", itemPrice: 650.0 }].forEach(({ itemName, itemPrice }) => {
-    test("API test - add item to cart and verify it added successfully", { tag: ["@apiTest"] }, async () => {
+    test("API test - add one item to cart and verify item added successfully", { tag: ["@apiTest"] }, async () => {
       const demoblaze = new DemoblazeApi(username, password);
       
       await demoblaze.login();
